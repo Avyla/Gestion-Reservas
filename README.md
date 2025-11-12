@@ -340,35 +340,37 @@ laboratorio2/
 ## 📸 Capturas de Pantalla
 
 ### Página de Inicio
-![Página de Inicio](imagenes/PaginaInicio.png)
+![Página de Inicio](image/PaginaInicio.png)
 *Página principal con acceso rápido a todos los módulos*
 
 ### Gestión de Usuarios
-![Lista de Usuarios](imagenes/ListaUsuarios.png)
+![Lista de Usuarios](image/UsuarioLista.png)
 *Listado de usuarios con opciones de editar y eliminar*
 
-![Formulario de Usuario](imagenes/FormularioUsuarios.png)
+![Formulario de Usuario](image/UsuarioFormulario.png)
 *Formulario para crear/editar usuarios con validaciones*
 
 ### Gestión de Salas
-![Lista de Salas](imagenes/SalaLista.png)
+![Lista de Salas](image/SalaLista.png)
 *Listado de salas con información de capacidad y estado*
 
-![Formulario de Sala](imagenes/SalaFormulario.png)
+![Formulario de Sala](image/SalaFormulario.png)
 *Formulario para crear/editar salas*
 
 ### Gestión de Reservas
-![Lista de Reservas](imagenes/ReservaLista.png)
+![Lista de Reservas](image/ReservaLista.png)
 *Listado de reservas con información de sala y usuario*
 
-![Formulario de Reserva](imagenes/ReservaFormulario.png)
+
+![Formulario de Reserva](image/ReservaFormulario.png)
 *Formulario para crear reservas con listas desplegables*
 
+
 ### Gestión de Recursos
-![Lista de Recursos](imagenes/RecursoLista.png)
+![Lista de Recursos](image/RecursoLista2.png)
 *Listado de recursos adicionales asignados a salas*
 
-![Formulario de Recurso](imagenes/RecursoFormulario.png)
+![Formulario de Recurso](image/RecursoFormulario.png)
 *Formulario para agregar recursos a las salas*
 
 ## 👥 Autores
