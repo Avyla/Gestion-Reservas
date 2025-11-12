@@ -9,177 +9,179 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background-color: #343a40;
-        }
-        .sidebar .nav-link {
-            color: #fff;
-            padding: 15px 20px;
-        }
-        .sidebar .nav-link:hover {
-            background-color: #495057;
-        }
-        .sidebar .nav-link.active {
-            background-color: #007bff;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-2 d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <h5 class="text-white text-center mb-4">Sistema de Gestión</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">
-                            <i class="bi bi-house"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/sala}">
-                            <i class="bi bi-building"></i> Gestión de Salas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/usuario}">
-                            <i class="bi bi-people"></i> Gestión de Usuarios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/view/reserva}">
-                            <i class="bi bi-calendar-check"></i> Gestión de Reservas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/recurso}">
-                            <i class="bi bi-tools"></i> Gestión de Recursos
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<!-- Navbar Superior -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-building-gear"></i>
+            Sistema de Reservas
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">
+                        <i class="bi bi-house-fill"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/sala}">
+                        <i class="bi bi-building"></i> Salas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/usuario}">
+                        <i class="bi bi-people"></i> Usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/view/reserva}">
+                        <i class="bi bi-calendar-check"></i> Reservas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/recurso}">
+                        <i class="bi bi-tools"></i> Recursos
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-        <!-- Main content -->
-        <main class="col-md-10 ms-sm-auto px-md-4">
-            <div class="pt-3 pb-2 mb-3 border-bottom">
-                <h2 th:text="${title}">Formulario Reserva</h2>
-            </div>
+<!-- Main Content -->
+<div class="container main-container">
+    <h2 class="page-title border-gradient">
+        <i class="bi bi-calendar-plus"></i> <span th:text="${title}">Formulario Reserva</span>
+    </h2>
 
-            <!-- Mensajes de error -->
-            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+    <!-- Mensajes de error -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-            <!-- Formulario -->
-            <div class="card">
-                <div class="card-body">
-                    <form th:action="@{/view/reserva/guardar}" th:object="${reserva}" method="post">
-                        <input type="hidden" th:field="*{reservaId}">
+    <!-- Formulario -->
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/view/reserva/guardar}" th:object="${reserva}" method="post">
+                <input type="hidden" th:field="*{reservaId}">
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="salaId" class="form-label">Sala <span class="text-danger">*</span></label>
-                                <select class="form-select"
-                                        id="salaId"
-                                        th:field="*{salaId}"
-                                        th:classappend="${#fields.hasErrors('salaId')} ? 'is-invalid' : ''"
-                                        required>
-                                    <option value="">Seleccione una sala</option>
-                                    <option th:each="sala : ${salas}"
-                                            th:value="${sala.salaId}"
-                                            th:text="${sala.nombre} + ' (Capacidad: ' + ${sala.capacidad} + ')'">
-                                        Sala A
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback" th:if="${#fields.hasErrors('salaId')}" th:errors="*{salaId}">
-                                    Error en sala
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="usuarioId" class="form-label">Usuario <span class="text-danger">*</span></label>
-                                <select class="form-select"
-                                        id="usuarioId"
-                                        th:field="*{usuarioId}"
-                                        th:classappend="${#fields.hasErrors('usuarioId')} ? 'is-invalid' : ''"
-                                        required>
-                                    <option value="">Seleccione un usuario</option>
-                                    <option th:each="usuario : ${usuarios}"
-                                            th:value="${usuario.usuarioId}"
-                                            th:text="${usuario.nombre} + ' (' + ${usuario.rol} + ')'">
-                                        Juan Pérez
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback" th:if="${#fields.hasErrors('usuarioId')}" th:errors="*{usuarioId}">
-                                    Error en usuario
-                                </div>
-                            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="salaId" class="form-label">
+                            <i class="bi bi-door-closed-fill"></i> Sala <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="salaId"
+                                th:field="*{salaId}"
+                                th:classappend="${#fields.hasErrors('salaId')} ? 'is-invalid' : ''"
+                                required>
+                            <option value="">Seleccione una sala</option>
+                            <option th:each="sala : ${salas}"
+                                    th:value="${sala.salaId}"
+                                    th:text="${sala.nombre} + ' (Capacidad: ' + ${sala.capacidad} + ' personas)'">
+                                Sala A
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('salaId')}" th:errors="*{salaId}">
+                            Error en sala
                         </div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="fecha" class="form-label">Fecha de Reserva <span class="text-danger">*</span></label>
-                            <input type="date"
-                                   class="form-control"
-                                   id="fecha"
-                                   th:field="*{fecha}"
-                                   th:classappend="${#fields.hasErrors('fecha')} ? 'is-invalid' : ''"
-                                   required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}">
-                                Error en fecha
-                            </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="usuarioId" class="form-label">
+                            <i class="bi bi-person-fill"></i> Usuario <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select"
+                                id="usuarioId"
+                                th:field="*{usuarioId}"
+                                th:classappend="${#fields.hasErrors('usuarioId')} ? 'is-invalid' : ''"
+                                required>
+                            <option value="">Seleccione un usuario</option>
+                            <option th:each="usuario : ${usuarios}"
+                                    th:value="${usuario.usuarioId}"
+                                    th:text="${usuario.nombre} + ' - ' + ${usuario.rol}">
+                                Juan Pérez
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('usuarioId')}" th:errors="*{usuarioId}">
+                            Error en usuario
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="horaInicio" class="form-label">Hora de Inicio <span class="text-danger">*</span></label>
-                                <input type="datetime-local"
-                                       class="form-control"
-                                       id="horaInicio"
-                                       th:field="*{horaInicio}"
-                                       th:classappend="${#fields.hasErrors('horaInicio')} ? 'is-invalid' : ''"
-                                       required>
-                                <div class="invalid-feedback" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}">
-                                    Error en hora inicio
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="horaFin" class="form-label">Hora de Fin <span class="text-danger">*</span></label>
-                                <input type="datetime-local"
-                                       class="form-control"
-                                       id="horaFin"
-                                       th:field="*{horaFin}"
-                                       th:classappend="${#fields.hasErrors('horaFin')} ? 'is-invalid' : ''"
-                                       required>
-                                <div class="invalid-feedback" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}">
-                                    Error en hora fin
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Nota:</strong> Asegúrese de que la sala esté disponible en el horario seleccionado.
-                        </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-warning">
-                                <i class="bi bi-save"></i>
-                                <span th:text="${isEdit} ? 'Actualizar' : 'Guardar'">Guardar</span>
-                            </button>
-                            <a th:href="@{/view/reserva}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </main>
+
+                <div class="mb-4">
+                    <label for="fecha" class="form-label">
+                        <i class="bi bi-calendar3"></i> Fecha de Reserva <span class="text-danger">*</span>
+                    </label>
+                    <input type="date"
+                           class="form-control"
+                           id="fecha"
+                           th:field="*{fecha}"
+                           th:classappend="${#fields.hasErrors('fecha')} ? 'is-invalid' : ''"
+                           required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}">
+                        Error en fecha
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="horaInicio" class="form-label">
+                            <i class="bi bi-clock"></i> Hora de Inicio <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="horaInicio"
+                               th:field="*{horaInicio}"
+                               th:classappend="${#fields.hasErrors('horaInicio')} ? 'is-invalid' : ''"
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}">
+                            Error en hora inicio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label for="horaFin" class="form-label">
+                            <i class="bi bi-clock-history"></i> Hora de Fin <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="horaFin"
+                               th:field="*{horaFin}"
+                               th:classappend="${#fields.hasErrors('horaFin')} ? 'is-invalid' : ''"
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}">
+                            Error en hora fin
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <strong>Importante:</strong> Asegúrese de que la sala esté disponible en el horario seleccionado antes de confirmar la reserva.
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save-fill"></i>
+                        <span th:text="${isEdit} ? 'Actualizar Reserva' : 'Guardar Reserva'">Guardar</span>
+                    </button>
+                    <a th:href="@{/view/reserva}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle-fill"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

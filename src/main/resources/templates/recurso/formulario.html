@@ -9,146 +9,155 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background-color: #343a40;
-        }
-        .sidebar .nav-link {
-            color: #fff;
-            padding: 15px 20px;
-        }
-        .sidebar .nav-link:hover {
-            background-color: #495057;
-        }
-        .sidebar .nav-link.active {
-            background-color: #007bff;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-2 d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <h5 class="text-white text-center mb-4">Sistema de Gestión</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">
-                            <i class="bi bi-house"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/sala}">
-                            <i class="bi bi-building"></i> Gestión de Salas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/usuario}">
-                            <i class="bi bi-people"></i> Gestión de Usuarios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/view/reserva}">
-                            <i class="bi bi-calendar-check"></i> Gestión de Reservas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/view/recurso}">
-                            <i class="bi bi-tools"></i> Gestión de Recursos
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<!-- Navbar Superior -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-building-gear"></i>
+            Sistema de Reservas
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">
+                        <i class="bi bi-house-fill"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/sala}">
+                        <i class="bi bi-building"></i> Salas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/usuario}">
+                        <i class="bi bi-people"></i> Usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/view/reserva}">
+                        <i class="bi bi-calendar-check"></i> Reservas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/view/recurso}">
+                        <i class="bi bi-tools"></i> Recursos
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-        <!-- Main content -->
-        <main class="col-md-10 ms-sm-auto px-md-4">
-            <div class="pt-3 pb-2 mb-3 border-bottom">
-                <h2 th:text="${title}">Formulario Recurso</h2>
-            </div>
+<!-- Main Content -->
+<div class="container main-container">
+    <h2 class="page-title border-gradient">
+        <i class="bi bi-wrench"></i> <span th:text="${title}">Formulario Recurso</span>
+    </h2>
 
-            <!-- Mensajes de error -->
-            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+    <!-- Mensajes de error -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-            <!-- Formulario -->
-            <div class="card">
-                <div class="card-body">
-                    <form th:action="@{/view/recurso/guardar}" th:object="${recurso}" method="post">
-                        <input type="hidden" th:field="*{recursoId}">
+    <!-- Formulario -->
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/view/recurso/guardar}" th:object="${recurso}" method="post">
+                <input type="hidden" th:field="*{recursoId}">
 
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del Recurso <span class="text-danger">*</span></label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="nombre"
-                                   th:field="*{nombre}"
-                                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
-                                   placeholder="Ej: Proyector, Pizarra Digital, Laptop"
-                                   required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
-                                Error en nombre
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
-                            <textarea class="form-control"
-                                      id="descripcion"
-                                      th:field="*{descripcion}"
-                                      th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid' : ''"
-                                      rows="3"
-                                      placeholder="Describe las características del recurso"
-                                      required></textarea>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
-                                Error en descripción
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="salaId" class="form-label">Sala Asignada <span class="text-danger">*</span></label>
-                            <select class="form-select"
-                                    id="salaId"
-                                    th:field="*{salaId}"
-                                    th:classappend="${#fields.hasErrors('salaId')} ? 'is-invalid' : ''"
-                                    required>
-                                <option value="">Seleccione una sala</option>
-                                <option th:each="sala : ${salas}"
-                                        th:value="${sala.salaId}"
-                                        th:text="${sala.nombre} + ' - Piso ' + ${sala.ubicacion}">
-                                    Sala A
-                                </option>
-                            </select>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('salaId')}" th:errors="*{salaId}">
-                                Error en sala
-                            </div>
-                            <small class="form-text text-muted">
-                                Seleccione la sala donde estará disponible este recurso
-                            </small>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Ejemplos de recursos:</strong> Proyectores, pizarras digitales, sistemas de audio, laptops, cámaras de videoconferencia, etc.
-                        </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-save"></i>
-                                <span th:text="${isEdit} ? 'Actualizar' : 'Guardar'">Guardar</span>
-                            </button>
-                            <a th:href="@{/view/recurso}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+                <div class="mb-4">
+                    <label for="nombre" class="form-label">
+                        <i class="bi bi-box-seam"></i> Nombre del Recurso <span class="text-danger">*</span>
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           id="nombre"
+                           th:field="*{nombre}"
+                           th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                           placeholder="Ej: Proyector HD, Pizarra Digital, Sistema de Audio"
+                           required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                        Error en nombre
+                    </div>
                 </div>
-            </div>
-        </main>
+
+                <div class="mb-4">
+                    <label for="descripcion" class="form-label">
+                        <i class="bi bi-card-text"></i> Descripción <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control"
+                              id="descripcion"
+                              th:field="*{descripcion}"
+                              th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid' : ''"
+                              rows="4"
+                              placeholder="Describe las características y especificaciones del recurso"
+                              required></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
+                        Error en descripción
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="salaId" class="form-label">
+                        <i class="bi bi-door-closed"></i> Sala Asignada <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select"
+                            id="salaId"
+                            th:field="*{salaId}"
+                            th:classappend="${#fields.hasErrors('salaId')} ? 'is-invalid' : ''"
+                            required>
+                        <option value="">Seleccione una sala</option>
+                        <option th:each="sala : ${salas}"
+                                th:value="${sala.salaId}"
+                                th:text="${sala.nombre} + ' - Piso ' + ${sala.ubicacion}">
+                            Sala A
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('salaId')}" th:errors="*{salaId}">
+                        Error en sala
+                    </div>
+                    <small class="form-text text-muted">
+                        <i class="bi bi-info-circle"></i> Seleccione la sala donde estará disponible este recurso
+                    </small>
+                </div>
+
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-lightbulb-fill" style="font-size: 1.5rem; margin-right: 1rem;"></i>
+                        <div>
+                            <strong>Ejemplos de recursos adicionales:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Proyectores y pantallas</li>
+                                <li>Sistemas de audio y micrófonos</li>
+                                <li>Pizarras digitales interactivas</li>
+                                <li>Cámaras de videoconferencia</li>
+                                <li>Laptops y tablets</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-save-fill"></i>
+                        <span th:text="${isEdit} ? 'Actualizar Recurso' : 'Guardar Recurso'">Guardar</span>
+                    </button>
+                    <a th:href="@{/view/recurso}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle-fill"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
