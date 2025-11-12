@@ -3,8 +3,10 @@ package com.univalle.laboratorioII.service;
 import com.univalle.laboratorioII.entity.dto.UsuarioDTO;
 import com.univalle.laboratorioII.entity.UsuarioEntity;
 import com.univalle.laboratorioII.repository.UsuarioRepository;
+import com.univalle.laboratorioII.repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,14 +15,13 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final ReservaRepository reservaRepository;
 
     public List<UsuarioDTO> findAllUsuarios() {
-
         List<UsuarioEntity> usuarios = usuarioRepository.findAll();
         return usuarios.stream()
                 .map(this::convertToDTO)
                 .toList();
-
     }
 
     public UsuarioDTO createUsuario(UsuarioDTO usuarioDTO) {
@@ -34,19 +35,35 @@ public class UsuarioService {
         return convertToDTO(savedUsuario);
     }
 
+    @Transactional
     public void deleteUsuario(Long id) {
+        // Verificar si existe
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar si tiene reservas asociadas
+        long reservasCount = reservaRepository.countByUsuario_UsuarioId(id);
+
+        if (reservasCount > 0) {
+            throw new RuntimeException(
+                    "No se puede eliminar el usuario porque tiene " + reservasCount +
+                            " reserva(s) asociada(s). Por favor, elimine primero las reservas."
+            );
+        }
+
+        // Si no tiene dependencias, eliminar
         usuarioRepository.deleteById(id);
     }
 
     public UsuarioDTO findUsuarioById(Long id) {
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario not found"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(usuarioEntity);
     }
 
     public UsuarioDTO updateUsuario(UsuarioDTO usuarioDTO) {
         UsuarioEntity usuarioEntity = usuarioRepository.findById(usuarioDTO.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario not found"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuarioEntity.setNombre(usuarioDTO.getNombre());
         usuarioEntity.setCorreo(usuarioDTO.getCorreo());
@@ -64,5 +81,4 @@ public class UsuarioService {
                 .rol(usuarioEntity.getRol())
                 .build();
     }
-
 }
